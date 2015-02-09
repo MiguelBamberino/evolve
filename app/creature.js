@@ -1,5 +1,4 @@
-HERBIVORE = 1;
-CARNIVORE = 2;
+
 /**
  *@author Mike Bamber
  * A basic object for modelling a creature in evolution world
@@ -10,9 +9,15 @@ CARNIVORE = 2;
  *@param  height
  *@param  colour
  */
+var util = require("util");
+//var Ting = require('./ting.js');
+var _super = require("./ting.js").prototype,
+    method = Creature.prototype = Object.create( _super );
+method.constructor = Creature;
+
 function Creature(name,position,width,height,colour){
 
-	this.name = name;
+	 _super.constructor.apply( this, arguments );
 
 	this.age = 1;
 	this.grown = false;
@@ -34,6 +39,7 @@ function Creature(name,position,width,height,colour){
 	this.time_to_bonk = 20;
 	this.nearby_tings = [];
 }
+//util.inherits(Creature, tingy);
 function isOdd(num) { return num % 2;}
 Creature.prototype.decide_action = function(){
 	have_action = false;
@@ -65,6 +71,7 @@ Creature.prototype.decide_action = function(){
 		this.pick_random_destination();
 	}
 }
+
 /**
  *
  * @returns {Creature.prototype.take_action.action}
@@ -180,3 +187,6 @@ Creature.prototype.grow = function(){
 Creature.prototype.set_nearby = function(things){
 	this.nearby_tings = things;
 }
+
+
+module.exports = Creature;
