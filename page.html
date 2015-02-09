@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Real time game</title>
+        <style type="text/css">
+#world{
+width:1000px;
+height:1000px;
+position:relative;
+border: 2px solid #444;
+}
+.creature{
+background-color:#f00;
+border-radius:30px;
+display:none;
+position:absolute;
+left:0;top:0;
+}
+        </style>
+        <script src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript">
+            window.onload = function() {
+
+    var welcome = document.getElementById("welcome");
+    var allUsers = document.getElementById("users");
+    var progress = document.getElementById("progress");
+    var results = document.getElementById("results");
+    var broadcaster = document.getElementById("broadcaster");
+    var stop_broadcaster = document.getElementById("stop_broadcaster");
+    var sample_creature = document.getElementById("sample_creature");
+    var world = document.getElementById("world");
+
+    //var socket = io.connect('http://192.168.0.40:3250');
+    var socket = io.connect('http://localhost:3250');
+
+
+     socket.on('broadcasting', function (data) {
+        world.innerHTML = "";
+		console.log(data);
+		for (i = 0; i< data.creatures.length; i++){	
+			var c = data.creatures[i];
+			var new_creature = sample_creature.cloneNode(true);
+			var xPos = c.position.x - Math.floor(c.width/2); // take off world height to get real pos
+			var yPos = 1000 - c.position.y -  Math.floor(c.height/2); // take off world height to get real pos
+			new_creature.style.cssText = "top:"+yPos+"px; left:"+xPos+"px; width:"+c.width+"px; height:"+c.height+"px; display:block;background-color:"+c.colour+";";
+			new_creature.innerHTML = c.changes;
+			world.appendChild(new_creature);
+			
+		}
+    });
+
+    broadcaster.onclick = function(){
+        console.log('broadcasting...');
+        socket.emit("broadcast");
+    }    
+    stop_broadcaster.onclick = function(){
+        console.log('halting broadcasting...');
+        socket.emit("stop_broadcast");
+    }
+
+
+}
+
+        </script>
+    </head>
+    <body class="main">
+        <div id="welcome"></div>
+        <div id="broadcaster" style="width:100px;height:100px;background-color:#aaa;">Go</div>
+        <div id="stop_broadcaster" style="width:100px;height:100px;background-color:#aaa;">Stop</div>
+        <hr />
+        <div id="progress"></div>
+        <div id="win">150</div>
+        <hr />
+        <div id="users"></div>
+        <hr />
+        <div id="world">
+<div id="sample_creature" class="creature"></div>
+</div>
+    </body>
+</html>
