@@ -1,5 +1,6 @@
 var Creature = require('./app/creature.js');
 
+
 var creatures = [];
 var start_test = function(){
 	creatures = [];
@@ -9,7 +10,8 @@ var start_test = function(){
 			{x:0,y:0},
 			5,
 			5,
-			'#f00'
+			'#f00',
+			HERBIVORE
 		)
 	);
 	creatures.push(
@@ -18,7 +20,8 @@ var start_test = function(){
 			{x:30,y:100},
 			5,
 			5,
-			'#0F0'
+			'#0F0',
+			HERBIVORE
 		)
 	);
 		/*
@@ -40,6 +43,29 @@ var start_test = function(){
 			'#fF0'
 		)
 	);*/
-	console.log(creatures);
+	//console.log(creatures[0]);
+	//creatures[0].position = {x:300,y:200};
+	//creatures[0].move_to_destination();
+	//console.log(creatures[0]);
+	creatures.forEach(function(item){
+
+	if(item.alive){
+
+		tings = [];
+		for (x = 0; x< creatures.length; x++){
+			if(creatures[x].name !== item.name){
+				//tings.push( {type:creatures[x].type,position:creatures[x].position } );
+				tings.push( creatures[x] );
+
+			}
+		}
+
+		item.set_nearby( tings );
+
+		data = item.take_action();
+		console.log(item);
+	}
+
+});
 }
 start_test();

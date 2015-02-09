@@ -13,40 +13,34 @@ var util = require("util");
 //var Ting = require('./ting.js');
 var _super = require("./ting.js").prototype,
     method = Creature.prototype = Object.create( _super );
-method.constructor = Creature;
+	Creature.prototype.constructor = Creature;
 
-function Creature(name,position,width,height,colour){
-
+function Creature(name,position,width,height,colour,type){
+	// load the super class up
 	 _super.constructor.apply( this, arguments );
-
+	// set age related variables
 	this.age = 1;
 	this.grown = false;
 	this.alive = true;
-
-	this.width = width;
-	this.height = height;
-	this.colour = colour;
-	this.base_colour = colour;
-	this.type = HERBIVORE;
-
-	this.position = position;
-	this.destination = {x:0,y:0};
-	this.travelling = false;
-	this.speed = 10;
-
+	// set misc variables
+	this.view_distance = 50;
 	this.changes = 0;
 	this.bonked_time = 0;
 	this.time_to_bonk = 20;
 	this.nearby_tings = [];
 }
-//util.inherits(Creature, tingy);
+
 function isOdd(num) { return num % 2;}
 Creature.prototype.decide_action = function(){
-	have_action = false;
-	// search for sexy partner
+	has_acted = false;
+	// search for nearest options
 	closest_same = this.search_for_closest(HERBIVORE);
-	if(this.grown ===true && closest_same.distance < 50  && this.bonked_time < this.time_to_bonk){
-		have_action = true;
+	closest_food = this.search_for_closest(PLANT);
+	closest_predator = this.search_for_closest(CARNIVORE);
+
+	console.log(closest_same);
+	if(this.grown ===true && closest_same.distance < this.view_distance  && this.bonked_time < this.time_to_bonk){
+		has_acted = true;
 		if(closest_same.distance < 5){
 			this.bonked_time += 1;
 			this.travelling = false;
@@ -67,7 +61,7 @@ Creature.prototype.decide_action = function(){
 	// if not then search for food
 
 	// if we still havent decided on an action and not currently moving somewhere then pick a new place to go to
-	if(!have_action){
+	if(!has_acted){
 		this.pick_random_destination();
 	}
 }
@@ -96,12 +90,15 @@ Creature.prototype.take_action = function(){
  */
 Creature.prototype.search_for_closest = function(TYPE){
 	// check over nearby objects
-	closest = {type:this.nearby_tings[0].type,position:this.nearby_tings[0].position, distance:1000000000000 } ;
+	closest  = false;
 	for (i=0; i < this.nearby_tings.length; i++){
-		new_distance = this.distance_between(this.position,this.nearby_tings[i].position);
-		if(closest.distance > new_distance){
-			closest = {type:this.nearby_tings[i].type,position:this.nearby_tings[i].position, distance:new_distance } ;
+		if(this.nearby_tings[i].type === TYPE){
+			new_distance = this.distance_between(this.position,this.nearby_tings[i].position);
+			if(closest===false || closest.distance > new_distance){
+				closest = {type:this.nearby_tings[i].type,position:this.nearby_tings[i].position, distance:new_distance } ;
+			}
 		}
+
 	}
 	return closest;
 }
@@ -129,24 +126,7 @@ Creature.prototype.distance_between = function(start,end){
 	distance = Math.sqrt(travel_sqd);
 	return distance;
 }
-/**
- * work out the next position for this object, to allow it
- * to move to is set destination
- * @returns {undefined}
- */
-Creature.prototype.move_to_destination = function(){
 
-	dist_to_target = this.distance_between(this.position,this.destination);
-	cycles_to_there = dist_to_target / this.speed;
-	this.position.x += (x_dist / cycles_to_there);
-	this.position.y += (y_dist / cycles_to_there);
-
-	//now lets check if we actually arrived at our destination
-	if(cycles_to_there < 2){
-		this.travelling = false;
-		this.changes += 1;
-	}
-}
 /**
  * Carry out the action(s) of aging this creature
  * @returns {undefined}
