@@ -11,7 +11,9 @@ var start_test = function(){
 			5,
 			5,
 			'#f00',
-			HERBIVORE
+			HERBIVORE,
+                        PLANT,
+                        CARNIVORE
 		)
 	);
 	creatures.push(
@@ -21,7 +23,9 @@ var start_test = function(){
 			5,
 			5,
 			'#0F0',
-			HERBIVORE
+			HERBIVORE,
+                        PLANT,
+                        CARNIVORE
 		)
 	);
 		/*
@@ -63,7 +67,7 @@ var start_test = function(){
 		item.set_nearby( tings );
 
 		data = item.take_action();
-		console.log(item);
+		console.log(data);
 	}
 
 });

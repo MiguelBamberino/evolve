@@ -2,15 +2,17 @@ HERBIVORE = 1;
 CARNIVORE = 2;
 PLANT = 3;
 
-function Ting(name,position,width,height,colour,TYPE){
+function Ting(id,name,position,width,height,colour,TYPE,EATS, EATEN_BY){
 
-	this.id = 1;
+	this.id = id;
 	this.name = name;
 	this.width = width;
 	this.height = height;
 	this.colour = colour;
 	this.base_colour = colour;
 	this.type = TYPE;
+        this.eats = EATS;
+        this.eaten_by = EATEN_BY;
 
 	this.position = position;
 	this.destination = {x:0,y:0};

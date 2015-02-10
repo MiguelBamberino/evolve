@@ -17,8 +17,6 @@ var io = require('socket.io').listen(app);
 var vm = require('vm');
 var Moniker = require('moniker');
 var Creature = require('./app/creature.js');
-var content = fs.readFileSync('./app/creature.js');
-//vm.runInThisContext(content);
 var port = 3250;
 
 app.listen(port);
@@ -84,38 +82,54 @@ var start_world = function(){
 	creatures = [];
 	creatures.push(
 		new Creature(
+                        1,
 			"frank1",
 			{x:0,y:0},
 			5,
 			5,
-			'#f00'
+			'#f00',
+			HERBIVORE,
+                        PLANT,
+                        CARNIVORE
 		)
 	);
 	creatures.push(
 		new Creature(
+                        2,
 			"frank2",
 			{x:30,y:100},
 			5,
 			5,
-			'#0F0'
+			'#0F0',
+			HERBIVORE,
+                        PLANT,
+                        CARNIVORE
 		)
 	);
 	creatures.push(
 		new Creature(
+                        3,
 			"frank3",
 			{x:100,y:100},
 			5,
 			5,
-			'#0b0'
+			'#0b0',
+                        HERBIVORE,
+                        PLANT,
+                        CARNIVORE
 		)
 	);
 	creatures.push(
 		new Creature(
+                        4,
 			"frank4",
 			{x:900,y:500},
 			5,
 			5,
-			'#fF0'
+			'#fF0',
+                        HERBIVORE,
+                        PLANT,
+                        CARNIVORE
 		)
 	);
 
@@ -129,24 +143,23 @@ var world_cycle = function(){
 	var tings = [];
 	creatures.forEach(function(item){
 
-		if(item.alive){
+            if(item.alive){
 
-			tings = [];
-			for (x = 0; x< creatures.length; x++){
-				if(creatures[x].name !== item.name){
-					//tings.push( {type:creatures[x].type,position:creatures[x].position } );
-					tings.push( creatures[x] );
+                tings = [];
+                for (x = 0; x< creatures.length; x++){
+                    if(creatures[x].name !== item.name){
+                        tings.push( creatures[x] );
+                    }
+                }
 
-				}
-			}
+                item.set_nearby( tings );
 
-			item.set_nearby( tings );
+                data = item.take_action();
+                if(data.type === "request")
+                    console.log(data);
+            }
 
-			data = item.take_action();
-			console.log(item);
-		}
-
-	});
+        });
 
     io.sockets.emit("broadcasting",
     {
@@ -155,4 +168,4 @@ var world_cycle = function(){
     });
 }
 
-main();
+test_cycle();
