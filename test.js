@@ -1,5 +1,5 @@
 var Creature = require('./app/creature.js');
-
+#var noth = null;
 
 var creatures = [];
 var start_test = function(){
